@@ -1,3 +1,3 @@
-module github.com/aosasona/gnew
+module gnew
 
-go 1.18
+go 1.20
