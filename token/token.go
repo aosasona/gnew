@@ -11,44 +11,58 @@ var keywords = map[string]TokenType{
 	"fn":     FUNCTION,
 	"let":    LET,
 	"return": RETURN,
-	// "const": CONST
+	"if":     IF,
+	"else":   ELSE,
+	"true":   TRUE,
+	"false":  FALSE,
 }
 
 const (
-	ILLEGAL = "ILLEGAL"
-	EOF     = "EOF"
+	ILLEGAL TokenType = "ILLEGAL"
+	EOF     TokenType = "EOF"
 
 	// Identifiers + literals
-	IDENTIFIER = "IDENTIFIER"
-	INT        = "INT"
+	IDENTIFIER TokenType = "IDENTIFIER"
+	INT        TokenType = "INT"
 
 	// Operators
-	ASSIGN        = "="
-	PLUS          = "+"
-	MINUS         = "-"
-	BANG          = "!"
-	ASTERISK      = "*"
-	FORWARD_SLASH = "/"
-	LT            = "<"
-	GT            = ">"
+	ASSIGN        TokenType = "="
+	PLUS          TokenType = "+"
+	MINUS         TokenType = "-"
+	BANG          TokenType = "!"
+	ASTERISK      TokenType = "*"
+	FORWARD_SLASH TokenType = "/"
+	INCREMENT     TokenType = "++"
+	DECREMENT     TokenType = "--"
+
+	// Comparison
+	LT     TokenType = "<"
+	GT     TokenType = ">"
+	EQ     TokenType = "=="
+	NOT_EQ TokenType = "!="
 
 	// Delimiters
-	COMMA     = ","
-	SEMICOLON = ";"
-
-	LPAREN   = "("
-	RPAREN   = ")"
-	LBRACE   = "{"
-	RBRACE   = "}"
-	LBRACKET = "["
-	RBRACKET = "]"
+	COMMA     TokenType = ","
+	SEMICOLON TokenType = ";"
+	LPAREN    TokenType = "("
+	RPAREN    TokenType = ")"
+	LBRACE    TokenType = "{"
+	RBRACE    TokenType = "}"
+	LBRACKET  TokenType = "["
+	RBRACKET  TokenType = "]"
 
 	// Keywords
-	FUNCTION = "FUNCTION"
-	LET      = "LET"
-	RETURN   = "RETURN"
+	FUNCTION TokenType = "FUNCTION"
+	LET      TokenType = "LET"
 
-	CONST = "CONST" // for later
+	// Control flow
+	RETURN TokenType = "RETURN"
+	IF     TokenType = "IF"
+	ELSE   TokenType = "ELSE"
+
+	// Booleans
+	TRUE  TokenType = "TRUE"
+	FALSE TokenType = "FALSE"
 )
 
 func LookupIdentifier(identifier string) TokenType {

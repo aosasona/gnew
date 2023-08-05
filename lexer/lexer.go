@@ -1,16 +1,21 @@
 package lexer
 
-import "gnew/token"
+import (
+	"fmt"
+	"gnew/token"
+)
 
 type Lexer struct {
 	input        string
 	position     int // current position
 	readPosition int // next position
 	char         byte
+
+	lineNumber int
 }
 
 func New(input string) *Lexer {
-	l := &Lexer{input: input}
+	l := &Lexer{input: input, lineNumber: 1}
 	l.readChar()
 	return l
 }
@@ -25,6 +30,24 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
+// peekChar returns the next character in the input without advancing the lexer to the next character
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	}
+	return l.input[l.readPosition]
+}
+
+func (l *Lexer) printPosition() {
+	fmt.Printf("line %d\n", l.lineNumber)
+}
+
+func (l *Lexer) makeTokenWithDoubleLiteral(tokenType token.TokenType) token.Token {
+	ch := l.char
+	l.readChar()
+	return l.makeToken(tokenType, string(ch)+string(l.char))
+}
+
 func (l *Lexer) NextToken() token.Token {
 	var tk token.Token
 
@@ -32,13 +55,29 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.char {
 	case '=':
-		tk = l.makeToken(token.ASSIGN)
+		if l.peekChar() == '=' {
+			tk = l.makeTokenWithDoubleLiteral(token.EQ)
+		} else {
+			tk = l.makeToken(token.ASSIGN)
+		}
 	case '+':
-		tk = l.makeToken(token.PLUS)
+		if l.peekChar() == '+' {
+			tk = l.makeTokenWithDoubleLiteral(token.INCREMENT)
+		} else {
+			tk = l.makeToken(token.PLUS)
+		}
 	case '-':
-		tk = l.makeToken(token.MINUS)
+		if l.peekChar() == '-' {
+			tk = l.makeTokenWithDoubleLiteral(token.DECREMENT)
+		} else {
+			tk = l.makeToken(token.MINUS)
+		}
 	case '!':
-		tk = l.makeToken(token.BANG)
+		if l.peekChar() == '=' {
+			tk = l.makeTokenWithDoubleLiteral(token.NOT_EQ)
+		} else {
+			tk = l.makeToken(token.BANG)
+		}
 	case '*':
 		tk = l.makeToken(token.ASTERISK)
 	case '/':
@@ -85,6 +124,9 @@ func (l *Lexer) NextToken() token.Token {
 
 func (l *Lexer) skipWhitespace() {
 	for l.char == ' ' || l.char == '\t' || l.char == '\n' || l.char == '\r' {
+		if l.char == '\n' {
+			l.lineNumber += 1
+		}
 		l.readChar()
 	}
 }
